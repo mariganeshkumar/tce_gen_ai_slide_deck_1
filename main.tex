@@ -57,7 +57,7 @@
 \begin{frame}
     \begin{figure}
         \centering
-        \includegraphics[width=0.5\linewidth]{image.png}
+        \includegraphics[width=0.5\linewidth]{images/image.png}
         \label{fig:enter-label}
     \end{figure}
     \centering
@@ -872,7 +872,7 @@ z_3 &= w_3h_1 + w_4h_2 + b_3 \\
 \begin{frame}{Hands-On Session}
 \begin{figure}
     \centering
-    \includegraphics[width=0.3\linewidth]{image2.png}
+    \includegraphics[width=0.3\linewidth]{images/image2.png}
 \end{figure}
 
 \begin{itemize}
@@ -1421,7 +1421,7 @@ Best 2011 Entry & 25.8\% \\
 \draw[->] (0,0) -- (0,6) node[left] {Capability};
 
 \foreach \x/\y in {2012/1, 2014/2, 2016/3, 2018/4, 2020/5, 2022/6} {
-    \node[below] at (\x/2-5,0) {\x};
+    \node[below] at (\x-2012,0) {\x};
 }
 
 \draw[blue,thick] plot[smooth] coordinates {
@@ -1465,7 +1465,7 @@ Best 2011 Entry & 25.8\% \\
 \begin{column}{0.48\textwidth}
 \textbf{Discriminative Models:}
 \begin{itemize}
-    \item \textbf{Learn} decision \textb{boundaries} between classes
+    \item \textbf{Learn} decision \textbf{boundaries} between classes
     \item<2-> Model $P(Y|X)$ - probability of label given input
     \item<3-> Focus on classification/regression tasks
     \item<4-> Examples: CNN classifiers, logistic regression
@@ -1606,13 +1606,13 @@ Text & Sentiment Analysis & Text Generation \\
     
     % Label
     \node at (0,-0.5) {$P(X) = ?$};
+\end{tikzpicture}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{image2.png}
+    \includegraphics[width=0.5\linewidth]{images/image2.png}
     \caption{Enter Caption}
     \label{fig:enter-label}
 \end{figure}
-\end{tikzpicture}
 \end{center}
 \end{frame}
 

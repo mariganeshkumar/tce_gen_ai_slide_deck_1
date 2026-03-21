@@ -1,0 +1,38 @@
+# LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+*.bbl
+*.blg
+*.thm
+*.pre
+*.run.xml
+*-blx.bib
+
+# Tectonic specific
+.tectonic/
+
+# PDF Output
+*.pdf
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# VS Code
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
