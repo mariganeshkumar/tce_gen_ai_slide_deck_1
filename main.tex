@@ -985,6 +985,145 @@ And hence the name \textbf{Gradient Descent}
     
 \end{frame}
 
+\begin{frame}{Batch Forward Pass: From Vectors to Matrices}
+To process a batch of size $B$, we stack individual input vectors into a matrix $X$. This allows us to leverage highly optimized Matrix-Matrix multiplication (GEMM) on hardware like GPUs.
+
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Individual Example:}
+{\footnotesize
+\[ z^{(i)}_h = x^{(i)} W_h + b_h \]
+\[ h^{(i)} = \sigma(z^{(i)}_h) \]
+}
+\end{column}
+\begin{column}{0.5\textwidth}
+\textbf{Batch Computation:}
+{\footnotesize
+\[ \underbrace{Z_h}_{B \times 2} = \underbrace{X}_{B \times 2} \underbrace{W_h}_{2 \times 2} + \underbrace{b_h}_{1 \times 2} \]
+\[ \underbrace{H}_{B \times 2} = \sigma(Z_h) \]
+}
+\end{column}
+\end{columns}
+
+\vspace{0.8cm}
+\textbf{Final Prediction for Batch:}
+\[ \underbrace{\hat{Y}}_{B \times 1} = \sigma \left( \underbrace{H}_{B \times 2} \underbrace{W_o}_{2 \times 1} + \underbrace{b_o}_{1 \times 1} \right) \]
+
+\centering
+\textit{Computationally efficient: One large matrix operation is much faster than $B$ small vector operations.}
+\end{frame}
+
+\begin{frame}{Matrix Anatomy: XOR Batch (B=4)}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{1. Matrix $X$ (Inputs):} \\
+Each \textbf{row} is a different training sample.
+\[ X = \begin{bmatrix} 0 & 0 \\ 0 & 1 \\ 1 & 0 \\ 1 & 1 \end{bmatrix} \in \mathbb{R}^{4 \times 2} \]
+
+\textbf{2. Matrix $W_h$ (Weights):} \\
+Each \textbf{column} leads to one hidden neuron.
+\[ W_h = \begin{bmatrix} w_{11} & w_{21} \\ w_{12} & w_{22} \end{bmatrix} \in \mathbb{R}^{2 \times 2} \]
+{\tiny $\leftarrow$ row 1: from $x_1$, row 2: from $x_2$}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{3. Matrix $H$ (Hidden States):} \\
+Result of the entire batch forward pass: $H = \sigma(X W_h + b_h)$
+\[ H = \begin{bmatrix} h_1^{(0,0)} & h_2^{(0,0)} \\ h_1^{(0,1)} & h_2^{(0,1)} \\ h_1^{(1,0)} & h_2^{(1,0)} \\ h_1^{(1,1)} & h_2^{(1,1)} \end{bmatrix} \in \mathbb{R}^{4 \times 2} \]
+\end{column}
+\end{columns}
+
+\vfill
+\centering
+\textbf{Logic:} Batch processing converts many small \textit{spatial} computations into one large \textit{structural} computation.
+\end{frame}
+
+
+\begin{frame}{The Goal: Efficient Batch Gradients}
+How do we calculate the average gradient for $B$ examples without using a slow \texttt{for} loop?
+
+\textbf{The Mathematical Challenge:}
+The global update requires the average of gradients from every example in the batch:
+\[ \frac{\partial \mathcal{L}_{\text{total}}}{\partial W} = \frac{1}{B} \sum_{i=1}^{B} \nabla W^{(i)} \]
+
+\textbf{The Vectorized Solution:}
+Instead of $B$ separate operations, we use \textbf{Matrix Transpose Multiplication}.
+\begin{itemize}
+    \item \textbf{Loop-based:} $O(B)$ sequential vector operations.
+    \item \textbf{Matrix form:} A single call to optimized GPU kernels (CUDA/cuBLAS) that process all examples in parallel.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Defining the Error Signal $\delta_o$}
+The term \textbf{$\delta$} (Delta) is fundamental to backpropagation. It represents the \textbf{sensitivity of the loss to the pre-activation ($Z$)}.
+
+\textbf{Formal Definition (Output Layer):}
+\[ \delta_o = \frac{\partial \mathcal{L}}{\partial Z_o} \]
+
+\textbf{Backpropagation Logic:}
+To compute $\delta_o$, we use the chain rule to combine how the loss changes with the prediction ($\hat{Y}$) and how the prediction changes with the pre-activation ($Z_o$):
+\[ 
+\delta_o = \underbrace{\frac{\partial \mathcal{L}}{\partial \hat{Y}}}_{\text{Rate of Error Change}} \odot \underbrace{\frac{\partial \hat{Y}}{\partial Z_o}}_{\text{Activation Slope}} 
+\]
+
+\vfill
+\centering
+\textit{This term acts as the "error signal" that gets passed backward through the gates.}
+\end{frame}
+
+\begin{frame}{Step 1: The Batch Error Signal ($\delta_o$)}
+First, we stack the individual error signals into a single "Error Matrix".
+
+\textbf{Matrix Formulation:}
+Calculating the difference between predictions and targets for the whole batch:
+\[ \underbrace{\delta_o}_{B \times 1} = \underbrace{(\hat{Y} - Y)}_{\substack{\text{Output Error} \\ (B \times 1)}} \odot \underbrace{\sigma'(Z_o)}_{\substack{\text{Output Activation} \\ (B \times 1)}} \]
+
+\textbf{What's inside?}
+\[ \underbrace{\begin{bmatrix} \delta_o^{(1)} \\ \vdots \\ \delta_o^{(B)} \end{bmatrix}}_{\delta_o} = \underbrace{\begin{bmatrix} \hat{y}^{(1)} - y^{(1)} \\ \vdots \\ \hat{y}^{(B)} - y^{(B)} \end{bmatrix}}_{\text{Error Vector}} \odot \underbrace{\begin{bmatrix} \sigma'(z_o^{(1)}) \\ \vdots \\ \sigma'(z_o^{(B)}) \end{bmatrix}}_{\text{Activation Slope}} \]
+Each row in this matrix "captures" the specific error contribution of one training sample.
+\end{frame}
+
+\begin{frame}{Defining Weight Gradients: $\frac{\partial \mathcal{L}}{\partial W_o}$}
+Once we have calculated the error signal $\delta_o$, we can determine how the output weights $W_o$ contributed to that error.
+
+\textbf{Backpropagation (Weight Update):}
+The weight $W_o$ affects the loss only through the pre-activation $Z_o$:
+\[ 
+\frac{\partial \mathcal{L}}{\partial W_o} = \underbrace{\frac{\partial \mathcal{L}}{\partial Z_o}}_{\text{Error Signal } (\delta_o)} \cdot \underbrace{\frac{\partial Z_o}{\partial W_o}}_{\text{Value of Activation } (H)} 
+\]
+
+\textbf{The Matrix Derivative Rule:}
+By applying the standard matrix calculus rule for the linear relationship $Z_o = H W_o + b_o$, our activation matrix is transposed to align dimensions:
+\[ 
+\nabla W_o = \frac{\partial \mathcal{L}}{\partial W_o} = \mathbf{\frac{1}{B} H^T \delta_o}
+\]
+
+\vfill
+\centering
+\textit{This transpose operation efficiently sums the gradients for all $B$ samples into a single parameter update.}
+\end{frame}
+
+\begin{frame}{Step 2: Propagating to Hidden Layers}
+To compute the hidden weights $W_h$, we first "push" the error back from the output layer to see how $H$ contributed to the final result.
+
+\textbf{1. The Hidden Error Signal ($\delta_h$):}
+By applying the matrix derivative rule to the linear relationship $Z_o = H W_o + b_o$, we find $\frac{\partial \mathcal{L}}{\partial H} = \delta_o W_o^T$.
+\[ 
+\underbrace{\delta_h}_{B \times 2} = \frac{\partial \mathcal{L}}{\partial Z_h} = \underbrace{\frac{\partial \mathcal{L}}{\partial Z_o}}_{\delta_o} \underbrace{\frac{\partial Z_o}{\partial H}}_{W_{o}^T}  \underbrace{\frac{\partial H}{\partial Z_h}}_{\sigma'(Z_h)} = (\delta_o W_o^T) \odot \sigma'(Z_h)
+\]
+
+\textbf{2. Final Gradient for Hidden Weights ($W_h$):}
+Using the same matrix derivation rule as the output layer:
+\[ 
+\underbrace{\nabla W_h}_{2 \times 2} = \frac{\partial \mathcal{L}}{\partial W_h} = \mathbf{\frac{1}{B} X^T \delta_h}
+\]
+
+\vfill
+\centering
+\textbf{Conclusion:} One massive "structural" pass handles the entire batch at once using just matrix algebra!
+\end{frame}
+
+
 \begin{frame}{Hands-On Session}
 \begin{figure}
     \centering
