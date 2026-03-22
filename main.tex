@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage[normalem]{ulem} % Provides \sout for strikeout
+\usepackage{attachfile}
 \usetikzlibrary{arrows,shapes,positioning,fit,arrows.meta,backgrounds,calc}
 
 % Code listing setup
@@ -699,10 +700,10 @@ XOR(A,B) = (A + B) \cdot \overline{A \cdot B}
 
 \begin{column}{0.5\textwidth}
 \begin{tikzpicture}[scale=0.6]
-\node[draw,circle] (x) at (0,0) {$x$};
-\node[draw,circle] (h1) at (2,1) {};
-\node[draw,circle] (h2) at (2,-1) {};
-\node[draw,circle] (y) at (4,0) {$\hat{y}$};
+\node[draw,circle,fill=green!20] (x) at (0,0) {$x$};
+\node[draw,circle,fill=blue!20] (h1) at (2,1) {};
+\node[draw,circle,fill=blue!20] (h2) at (2,-1) {};
+\node[draw,circle,fill=red!20] (y) at (4,0) {$\hat{y}$};
 
 \draw[->] (x) -- (h1) node[midway,above] {$w_1$};
 \draw[->] (x) -- (h2) node[midway,below] {$w_2$};
@@ -736,18 +737,18 @@ XOR(A,B) = (A + B) \cdot \overline{A \cdot B}
 
 \begin{column}{0.4\textwidth}
 \begin{tikzpicture}[scale=0.7]
-\node[draw,circle] (x1) at (0,0) {$x_1$};
-\node[draw,circle] (x2) at (0,-2) {$x_2$};
-\node[draw,circle] (h1) at (2,0) {$\sigma$};
-\node[draw,circle] (h2) at (2,-2) {$\sigma$};
-\node[draw,circle] (y) at (4,-1) {$\sigma$};
+\node[draw,circle,fill=green!20] (x1) at (0,0) {$x_1$};
+\node[draw,circle,fill=green!20] (x2) at (0,-2) {$x_2$};
+\node[draw,circle,fill=blue!20,label=above:$h_1$] (h1) at (2,0) {$\sigma$};
+\node[draw,circle,fill=blue!20,label=below:$h_2$] (h2) at (2,-2) {$\sigma$};
+\node[draw,circle,fill=red!20,label=right:$\hat{y}$] (y) at (4,-1) {$\sigma$};
 
 \draw[->] (x1) -- (h1) node[midway,above] {$w_{11}$};
 \draw[->] (x1) -- (h2) node[midway,below] {$w_{21}$};
 \draw[->] (x2) -- (h1) node[midway,above] {$w_{12}$};
 \draw[->] (x2) -- (h2) node[midway,below] {$w_{22}$};
-\draw[->] (h1) -- (y) node[midway,above] {$w_1$};
-\draw[->] (h2) -- (y) node[midway,below] {$w_2$};
+\draw[->] (h1) -- (y) node[midway,above] {$w_3$};
+\draw[->] (h2) -- (y) node[midway,below] {$w_4$};
 
 % Backprop arrows
 \draw[red,->] (y) edge[bend left] (h1);
@@ -784,18 +785,18 @@ z_3 &= w_3h_1 + w_4h_2 + b_3 \\
 
 \begin{column}{0.4\textwidth}
 \begin{tikzpicture}[scale=0.7]
-\node[draw,circle] (x1) at (0,0) {$x_1$};
-\node[draw,circle] (x2) at (0,-2) {$x_2$};
-\node[draw,circle] (h1) at (2,0) {$\sigma$};
-\node[draw,circle] (h2) at (2,-2) {$\sigma$};
-\node[draw,circle] (y) at (4,-1) {$\sigma$};
+\node[draw,circle,fill=green!20] (x1) at (0,0) {$x_1$};
+\node[draw,circle,fill=green!20] (x2) at (0,-2) {$x_2$};
+\node[draw,circle,fill=blue!20,label=above:$h_1$] (h1) at (2,0) {$\sigma$};
+\node[draw,circle,fill=blue!20,label=below:$h_2$] (h2) at (2,-2) {$\sigma$};
+\node[draw,circle,fill=red!20,label=right:$\hat{y}$] (y) at (4,-1) {$\sigma$};
 
 \draw[->] (x1) -- (h1) node[midway,above] {$w_{11}$};
 \draw[->] (x1) -- (h2) node[midway,below] {$w_{21}$};
 \draw[->] (x2) -- (h1) node[midway,above] {$w_{12}$};
 \draw[->] (x2) -- (h2) node[midway,below] {$w_{22}$};
-\draw[->] (h1) -- (y) node[midway,above] {$w_1$};
-\draw[->] (h2) -- (y) node[midway,below] {$w_2$};
+\draw[->] (h1) -- (y) node[midway,above] {$w_3$};
+\draw[->] (h2) -- (y) node[midway,below] {$w_4$};
 
 % Backprop arrows
 \draw[red,->] (y) edge[bend left] (h1);
@@ -825,41 +826,155 @@ z_3 &= w_3h_1 + w_4h_2 + b_3 \\
 \begin{frame}
 \frametitle{Computing Hidden Layer Gradients}
 
-\textbf{Chain Rule Breakdown:}
+\textbf{Chain Rule for $w_{11}$:}
 \begin{align*}
 \frac{\partial \mathcal{L}}{\partial w_{11}} &= 
 \underbrace{\frac{\partial \mathcal{L}}{\partial \hat{y}}}_{\text{Output Error}} 
-\cdot \underbrace{\frac{\partial \hat{y}}{\partial h_1}}_{\text{Weight Contribution}} 
-\cdot \underbrace{\frac{\partial h_1}{\partial z_1}}_{\text{Activation Derivative}} 
+\cdot \underbrace{\frac{\partial \hat{y}}{\partial z_3}}_{\text{Output Activation}} 
+\cdot \underbrace{\frac{\partial z_3}{\partial h_1}}_{\text{Output Weight}} 
+\cdot \underbrace{\frac{\partial h_1}{\partial z_1}}_{\text{Hidden Activation}} 
 \cdot \underbrace{\frac{\partial z_1}{\partial w_{11}}}_{\text{Input Value}} \\
 &= (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_3 \cdot h_1(1-h_1) \cdot x_1
 \end{align*}
 
-\textbf{Component Explanation:}
+\textbf{Component Explanation for $w_{11}$:}
+{\footnotesize
 \begin{itemize}
-\item $\frac{\partial \mathcal{L}}{\partial \hat{y}} = (y - \hat{y})$: Direct error measurement
-\item $\frac{\partial \hat{y}}{\partial h_1} = w_3\hat{y}(1-\hat{y})$: Impact through output weight
-\item $\frac{\partial h_1}{\partial z_1} = h_1(1-h_1)$: Sigmoid derivative
-\item $\frac{\partial z_1}{\partial w_{11}} = x_1$: Input contribution
+\item $\frac{\partial \mathcal{L}}{\partial \hat{y}} = \frac{\partial}{\partial \hat{y}} [\frac{1}{2}(y - \hat{y})^2] = (y - \hat{y})$: Direct error measurement
+\item $\frac{\partial \hat{y}}{\partial z_3} = \frac{\partial}{\partial z_3} \sigma(z_3) = \hat{y}(1-\hat{y})$: Output activation derivative
+\item $\frac{\partial z_3}{\partial h_1} = \frac{\partial}{\partial h_1} (w_3h_1 + w_4h_2 + b_3) = w_3$: Output weight contribution
+\item $\frac{\partial h_1}{\partial z_1} = \frac{\partial}{\partial z_1} \sigma(z_1) = h_1(1-h_1)$: Hidden activation derivative
+\item $\frac{\partial z_1}{\partial w_{11}} = \frac{\partial}{\partial w_{11}} (w_{11}x_1 + w_{12}x_2 + b_1) = x_1$: Input contribution
+\end{itemize}
+}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Updating Parameters: The Optimization Step}
+
+\textbf{The Weight Update Rule:}
+After computing the gradients using backpropagation, we adjust each parameter to minimize the loss function $\mathcal{L}$.
+
+\textbf{General Gradient Descent Formula:}
+\[
+w \leftarrow w - \eta \cdot \frac{\partial \mathcal{L}}{\partial w}
+\]
+
+\textbf{Application to $w_{11}$:}
+Substituting our derived chain rule result:
+\[
+w_{11} \leftarrow w_{11} + \eta \cdot \underbrace{\left[ (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_3 \cdot h_1(1-h_1) \cdot x_1 \right]}_{\text{Error Signal Propagation}}
+\]
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Global Parameter Updates for XOR Network}
+
+{\footnotesize
+\textbf{Output Layer Weights (2 neurons):}
+\begin{align*}
+w_3 &\leftarrow w_3 + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot h_1 \\
+w_4 &\leftarrow w_4 + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot h_2
+\end{align*}
+
+\textbf{Hidden Layer Weights (4 links):}
+\begin{align*}
+w_{11} &\leftarrow w_{11} + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_3 \cdot h_1(1-h_1) \cdot x_1 \\
+w_{12} &\leftarrow w_{12} + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_3 \cdot h_1(1-h_1) \cdot x_2 \\
+w_{21} &\leftarrow w_{21} + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_4 \cdot h_2(1-h_2) \cdot x_1 \\
+w_{22} &\leftarrow w_{22} + \eta \cdot (y - \hat{y}) \cdot \hat{y}(1-\hat{y}) \cdot w_4 \cdot h_2(1-h_2) \cdot x_2
+\end{align*}
+}
+
+\vfill
+{\footnotesize
+\textit{Derivation for one of these weights could be a question in the exam.} \\
+(Follow the same chain rule principles used for $w_{11}$ on the previous slide.)
+}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Why Subtract the Gradient? The Intuition}
+
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\textbf{Understanding the Direction:}
+The derivative $\frac{\partial \mathcal{L}}{\partial w}$ represents the \textbf{slope} of the loss function. It tells us how the loss changes if we increase the weight $w$.
+
+\begin{itemize}
+    \item \textbf{Scenario 1: Positive Slope}
+    \begin{itemize}
+        \item Increasing $w$ \textbf{increases} the loss.
+        \item To minimize, we \textbf{decrease} $w$. 
+    \end{itemize}
+    \item \textbf{Scenario 2: Negative Slope}
+    \begin{itemize}
+        \item Increasing $w$ \textbf{decreases} the loss.
+        \item To minimize, we \textbf{increase} $w$.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Universal Rule:}
+Subtracting the gradient always moves us \textbf{opposite} to the uphill direction.
+
+And hence the name \textbf{Gradient Descent}
+\end{column}
+
+\begin{column}{0.35\textwidth}
+\centering
+\begin{tikzpicture}[scale=1.1]
+    \draw[->] (-0.2,0) -- (2.5,0) node[right] {$w$};
+    \draw[->] (0,-0.2) -- (0,2.5) node[above] {$\mathcal{L}$};
+    
+    % Recall note
+    \node[anchor=west] at (0,3.0) {\footnotesize \textbf{Recall:}};
+    \node[anchor=west] at (0,2.6) {\footnotesize $y = \mathbf{a}x + b$};
+    
+    % Positive Slope
+    \draw[blue, thick] (0.2,0.2) -- (2.0,2.0) node[pos=0.8, sloped, above] {\tiny $a > 0$};
+    
+    % Negative Slope
+    \draw[red, thick] (0.2,2.0) -- (2.0,0.2) node[pos=0.8, sloped, above] {\tiny $a < 0$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Update Rule: Key Concepts}
+
+\begin{itemize}
+    \item \textbf{Learning Rate ($\eta$):} A small positive scalar (e.g., $0.01$) that controls the weight adjustment step size.
+    \begin{itemize}
+        \item Too large $\to$ oscillation or divergence.
+        \item Too small $\to$ slow convergence.
+    \end{itemize}
+    \item \textbf{Global Update:} This process is repeated for \textit{every} weight ($w_{ij}$) and bias ($b_i$) in the network.
+    \item \textbf{Iteration (Epoch):} One full pass through the entire training dataset is called an \textbf{Epoch}. Training usually requires hundreds or thousands of epochs to converge.
 \end{itemize}
 
 \end{frame}
 
+
 \begin{frame}{Parallel Forward and Backward computation}
 \centering
 \begin{tikzpicture}[scale=1.5]
-\node[draw,circle] (x1) at (0,0) {$x_1$};
-\node[draw,circle] (x2) at (0,-2) {$x_2$};
-\node[draw,circle] (h1) at (2,0) {$\sigma$};
-\node[draw,circle] (h2) at (2,-2) {$\sigma$};
-\node[draw,circle] (y) at (4,-1) {$\sigma$};
+\node[draw,circle,fill=green!20] (x1) at (0,0) {$x_1$};
+\node[draw,circle,fill=green!20] (x2) at (0,-2) {$x_2$};
+\node[draw,circle,fill=blue!20,label=above:$h_1$] (h1) at (2,0) {$\sigma$};
+\node[draw,circle,fill=blue!20,label=below:$h_2$] (h2) at (2,-2) {$\sigma$};
+\node[draw,circle,fill=red!20,label=right:$\hat{y}$] (y) at (4,-1) {$\sigma$};
 
 \draw[->] (x1) -- (h1) node[midway,above] {$w_{11}$};
 \draw[->] (x1) -- (h2) node[midway,below] {$w_{21}$};
 \draw[->] (x2) -- (h1) node[midway,above] {$w_{12}$};
 \draw[->] (x2) -- (h2) node[midway,below] {$w_{22}$};
-\draw[->] (h1) -- (y) node[midway,above] {$w_1$};
-\draw[->] (h2) -- (y) node[midway,below] {$w_2$};
+\draw[->] (h1) -- (y) node[midway,above] {$w_3$};
+\draw[->] (h2) -- (y) node[midway,below] {$w_4$};
 
 % Backprop arrows
 \draw[red,->] (y) edge[bend left] (h1);
@@ -877,7 +992,7 @@ z_3 &= w_3h_1 + w_4h_2 + b_3 \\
 \end{figure}
 
 \begin{itemize}
-    \item Click here to download the file: \href{https://drive.google.com/file/d/1fNGAqAnFb2Jofu3ZP1L5prBA1-boXLli/view?usp=share_link}{Perceptron Hands-ON Session}
+    \item Click here to download/open the notebook: \attachfile[color=0.5 0.5 0.5]{hands-on/Perceptron_Hands_ON.ipynb} (or click \href{run:hands-on/Perceptron_Hands_ON.ipynb}{here} to open if supported)
 \end{itemize}
 
 
@@ -1761,7 +1876,7 @@ Text & Sentiment Analysis & Text Generation \\
 \begin{frame}
 \frametitle{Hands-on: Simple Autoencoder for Image Reconstruction}
 \begin{itemize}
-    \item Click here to download the file: \href{https://drive.google.com/file/d/1RgGwSJogVCm2UfRfpbctzQQzN3o7hRhY/view?usp=sharing}{Auto Encoder Hands On.ipynb}
+    \item Click here to download/open the notebook: \attachfile[color=0.5 0.5 0.5]{hands-on/Auto_Encoder_Hands_On.ipynb} (or click \href{run:hands-on/Auto_Encoder_Hands_On.ipynb}{here} to open if supported)
 \end{itemize}
 \end{frame}
 

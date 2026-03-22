@@ -40,6 +40,6 @@ These suggestions are designed to make the slide deck more engaging, modern, and
 * [x] Fix `\caption{Enter Caption}` on Slide 20 (line 1613).
 
 * [x] Add `\metroset{block=fill}` to preamble.
-* [ ] Move Google Drive notebook links to the local `hands-on/` folder.
+* [x] Move Google Drive notebook links to the local `hands-on/` folder.
 * [ ] Add a "Modern Gen AI Collages" slide at the beginning.
 * [ ] Consolidate probability refreshers into one section.
