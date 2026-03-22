@@ -5,13 +5,10 @@ These suggestions are designed to make the slide deck more engaging, modern, and
 ## 1. Pedagogical Enhancements (The "Story")
 
 * **State of the Art (SOTA) Teaser**: Add a slide right after the "Learning Objectives" showing a collage of Sora (video), Midjourney (image), and GPT-4o (reasoning). This sets the "North Star" for the course.
-* **"Intuition First, Math Second"** [DONE]: For the MLE and Bayes slides, add a single bullet point at the top with a human-readable summary.
-  * *Example (Bayes)*: "How we update our beliefs when we see new evidence."
 * **Self-Attention Teaser**: Introduce the concept of "Attention" as the breakthrough that led to modern Gen AI. A simple diagram showing how tokens in a sentence "look at each other" would bridge the gap from AlexNet to GPT-4.
 
 ## 2. Structural & Content Changes
 
-* **Consolidate Probability**: Merge the "Core Probability Concepts" (Slide 237) and "Probabilistic Modeling Foundations" (Slide 1581) into a single "Mathematical Toolkit" section.
 * **Finalize Sections**:
   * **About Me/You**: Replace empty `\section` headers with frames that include a QR code for a student survey/poll.
   * **Captions**: Search for all `\caption{Enter Caption}` and replace them with descriptive titles (e.g., "Normal Distribution over Latent Variable $z$").
@@ -42,4 +39,3 @@ These suggestions are designed to make the slide deck more engaging, modern, and
 * [x] Add `\metroset{block=fill}` to preamble.
 * [x] Move Google Drive notebook links to the local `hands-on/` folder.
 * [x] Add a "Modern Gen AI Collages" slide at the beginning.
-* [ ] Consolidate probability refreshers into one section.

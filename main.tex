@@ -52,9 +52,7 @@
 \end{itemize}
 \end{frame}
 
-\section{About Me}
-
-\section{About You}
+\section{Course Overview \& State of the Art}
 
 \begin{frame}
     \begin{figure}
@@ -267,6 +265,8 @@ Today's GEN AI models can learn and generate any data (to a decent accuracy)
 \end{frame}
 
 
+\section{Mathematical Foundations}
+\subsection{Probability Basics}
 %%% Slide 1: Probability Basics %%%
 \begin{frame}{Core Probability Concepts}
 \begin{columns}[T]
@@ -376,6 +376,7 @@ p & k=1 \\
 
 \end{frame}
 
+\subsection{Parameter Estimation}
 %%% Slide 4: Maximum Likelihood Estimation %%%
 \begin{frame}{Maximum Likelihood Estimation (MLE)}
 \textbf{Intuition:} Finding the parameters that make the observed data most likely.
@@ -439,6 +440,8 @@ p & k=1 \\
 \end{itemize}
 \end{frame}
 
+\section{The Birth of Neural Networks}
+\subsection{From ML to Deep Learning}
 %% Slide 6: Traditional ML vs Deep Learning
 \begin{frame}
 \frametitle{From Traditional ML to Deep Learning}
@@ -464,7 +467,7 @@ p & k=1 \\
 \end{columns}
 \end{frame}
 
-\section{History of Deep Learning}
+\subsection{The Perceptron (1940s-1950s)}
 
 %% Slide 7: History of Deep Learning
 \begin{frame}
@@ -594,6 +597,7 @@ p & k=1 \\
 \end{frame}
 
 
+\subsection{The Perceptron Limitation (XOR)}
 %%% Slide 2: Nonlinear Limitation %%%
 \begin{frame}
 \frametitle{Perceptron Limitation: Nonlinear Problems}
@@ -711,6 +715,7 @@ XOR(A,B) = (A + B) \cdot \overline{A \cdot B}
 
 
 
+\subsection{Multi-Layer Perceptrons \& Backpropagation}
 %%% 1980s: Backpropagation Breakthrough %%%
 \begin{frame}
 \frametitle{1980s: Backpropagation Revolution}
@@ -842,6 +847,7 @@ z_3 &= w_3h_1 + w_4h_2 + b_3 \\
 \end{columns}
 \end{frame}
 
+\subsection{Backpropagation Mechanics}
 \begin{frame}
 \frametitle{Gradient Computation Framework}
 
@@ -994,6 +1000,8 @@ And hence the name \textbf{Gradient Descent}
 \end{frame}
 
 
+\section{Scaling Deep Learning: Vectorization}
+\subsection{Matrix Math \& Batching}
 \begin{frame}{Parallel Forward and Backward computation}
 \centering
 \begin{tikzpicture}[scale=1.5]
@@ -1073,6 +1081,7 @@ Result of the entire batch forward pass: $H = \sigma(X W_h + b_h)$
 \end{frame}
 
 
+\subsection{Vectorized Batch Gradients}
 \begin{frame}{The Goal: Efficient Batch Gradients}
 How do we calculate the average gradient for $B$ examples without using a slow \texttt{for} loop?
 
@@ -1158,6 +1167,7 @@ Using the same matrix derivation rule as the output layer:
 \end{frame}
 
 
+\subsection{Hands-On: Perceptron \& XOR}
 \begin{frame}{Hands-On Session}
 \begin{figure}
     \centering
@@ -1193,6 +1203,8 @@ Using the same matrix derivation rule as the output layer:
 \end{frame}
 
 
+\section{Key Components \& Architectures}
+\subsection{Neural Network Fundamentals}
 %% Slide 9: What is a Neural Network?
 \begin{frame}
 \frametitle{What is a Neural Network?}
@@ -1222,6 +1234,7 @@ Using the same matrix derivation rule as the output layer:
 \end{itemize}
 \end{frame}
 
+\subsection{Activation Functions}
 %% Slide 11: Activation Functions
 \begin{frame}
 \frametitle{Common Activation Functions}
@@ -1305,6 +1318,7 @@ Using the same matrix derivation rule as the output layer:
 \end{columns}
 \end{frame}
 
+\subsection{Convolutional Neural Networks (CNNs)}
 %% Slide 13: Convolutional Neural Networks (CNNs)
 \begin{frame}
 \frametitle{Convolutional Neural Networks (CNNs)}
@@ -1542,6 +1556,7 @@ For 2D:
 
 
 
+\subsection{Historical Milestones (1990s-2026)}
 %%% 1990s: LeNet Evolution %%%
 \begin{frame}
 \frametitle{1990s: LeNet's CNN Breakthrough}
@@ -1735,6 +1750,8 @@ Best 2011 Entry & 25.8\% \\
 
 
 
+\section{Introduction to Generative AI}
+\subsection{Generative vs Discriminative}
 %% Slide 18: Introduction to Generative AI
 \begin{frame}
 \frametitle{Introduction to Generative AI}
@@ -1905,6 +1922,7 @@ Text & Sentiment Analysis & Text Generation \\
 \end{center}
 \end{frame}
 
+\subsection{Latent Spaces \& Core Concepts}
 %% Slide 21: Latent Representations
 \begin{frame}
 \frametitle{Latent Representations and Spaces}
@@ -1962,6 +1980,8 @@ Text & Sentiment Analysis & Text Generation \\
 \end{center}
 \end{frame}
 
+\section{Autoencoders: Building the Latent Bridge}
+\subsection{AE Architecture}
 %% Slide 26: Introduction to Autoencoders
 \begin{frame}
 \frametitle{Introduction to Autoencoders}
@@ -2046,6 +2066,7 @@ Text & Sentiment Analysis & Text Generation \\
 \end{frame}
 
 %% Slide 29: Project Overview
+\subsection{Hands-on: Image Reconstruction}
 \begin{frame}
 \frametitle{Hands-on: Simple Autoencoder for Image Reconstruction}
 \begin{itemize}
@@ -2071,6 +2092,7 @@ Text & Sentiment Analysis & Text Generation \\
 \end{itemize}
 \end{frame}
 
+\section{Conclusion \& Summary}
 %% Slide 36: Session Summary
 \begin{frame}
 \frametitle{Session Summary}
@@ -2085,6 +2107,7 @@ Text & Sentiment Analysis & Text Generation \\
 
 
 \section{Appendix}
+\subsection{Sampling \& Generation}
 
 %%% Slide 7: Sampling Methods %%%
 \begin{frame}{Sampling \& Generation}
