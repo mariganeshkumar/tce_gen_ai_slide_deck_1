@@ -265,180 +265,6 @@ Today's GEN AI models can learn and generate any data (to a decent accuracy)
 \end{frame}
 
 
-\section{Mathematical Foundations}
-\subsection{Probability Basics}
-%%% Slide 1: Probability Basics %%%
-\begin{frame}{Core Probability Concepts}
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\textbf{Key Definitions:}
-\begin{itemize}
-\item \textbf{Sample Space} ($\Omega$): All possible outcomes
-\item \textbf{Event} ($E \subseteq \Omega$): Subset of outcomes
-\item \textbf{Probability}: $P(E) \in [0,1]$ with:
-\begin{itemize}
-\item $P(\Omega) = 1$
-\item $P(\bigcup_i E_i) = \sum_i P(E_i)$ for disjoint events
-\end{itemize}
-\end{itemize}
-\end{column}
-
-\begin{column}{0.48\textwidth}
-\textbf{Random Variables:}
-\begin{itemize}
-\item Maps outcomes to numbers
-\item Discrete vs Continuous
-\item PMF/PDF: $p_X(x) = P(X=x)$
-\end{itemize}
-
-\begin{tikzpicture}[scale=0.6]
-\draw[->] (0,0) -- (4,0) node[right] {$x$};
-\draw[->] (0,0) -- (0,3) node[above] {$p(x)$};
-\draw[blue,thick] plot[smooth] coordinates {(0.5,0.2) (1.5,2.5) (2.5,1) (3.5,0.3)};
-\end{tikzpicture}
-\end{column}
-\end{columns}
-
-\vspace{0.5cm}
-\textbf{GenAI Connection:} All generative models learn probability distributions $p(x)$ over data space
-\end{frame}
-
-%%% Slide 2: Key Distributions %%%
-\begin{frame}{Essential Probability Distributions}
-\begin{columns}[T]
-\begin{column}{0.33\textwidth}
-\textbf{Bernoulli:}
-\[ P(X=k) = \begin{cases}
-p & k=1 \\
-1-p & k=0
-\end{cases} \]
-\begin{tikzpicture}[scale=0.5]
-\draw[->] (0,0) -- (2,0);
-\draw[->] (0,0) -- (0,1.5);
-\draw[red] (0.5,0) -- (0.5,1) node[above] {$p$};
-\draw[blue] (1.5,0) -- (1.5,0.5) node[above] {$1-p$};
-\end{tikzpicture}
-\end{column}
-
-\begin{column}{0.33\textwidth}
-\textbf{Categorical:}
-\[ P(X=k) = p_k \]
-\[ \text{where } \sum p_k = 1 \]
-\begin{tikzpicture}[scale=0.5]
-\foreach \x/\h in {0.5/1.5,1.5/1,2.5/0.8} {
-    \draw[blue] (\x,0) -- (\x,\h);
-}
-\end{tikzpicture}
-\end{column}
-
-\begin{column}{0.33\textwidth}
-\textbf{Gaussian:}
-\[ p(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]
-\begin{tikzpicture}[scale=0.5]
-\draw[domain=-2:2,smooth,variable=\x,blue] plot ({\x+1.5},{1.5*exp(-\x*\x)});
-\end{tikzpicture}
-\end{column}
-\end{columns}
-
-\vspace{0.5cm}
-\textbf{GenAI Usage:} Bernoulli/Categorical for discrete data, Gaussian for continuous latent spaces
-\end{frame}
-
-%%% Slide 3: Conditional Probability & Bayes %%%
-\begin{frame}{Conditional Probability \& Bayes' Rule}
-\textbf{Intuition:} How we update our beliefs when we see new evidence.
-\begin{columns}[T]
-\begin{column}{0.6\textwidth}
-\textbf{Conditional Probability:}
-\[ P(A|B) = \frac{P(A \cap B)}{P(B)} \]
-
-\textbf{Bayes' Theorem:}
-\[ P(A|B) = \frac{P(B|A)P(A)}{P(B)} \]
-
-\textbf{Chain Rule:}
-\[ P(X_1,\ldots,X_n) = \prod_{i=1}^n P(X_i|X_1,\ldots,X_{i-1}) \]
-\end{column}
-
-\begin{column}{0.4\textwidth}
-\begin{tikzpicture}[scale=0.8]
-\draw[fill=blue!20, opacity=0.5] (0,0) circle (1.5);
-\draw[fill=red!20, opacity=0.5] (1.5,0) circle (1.5);
-\node at (-0.5,0) {A};
-\node at (1.5,0) {B};
-\end{tikzpicture}
-\vspace{0.5cm}
-\newline
-\textbf{GenAI Application:} Foundation of latent variable models like VAEs:
-\[ p(x|z) = \frac{p(z|x)p(x)}{p(z)} \]
-\end{column}
-\end{columns}
-
-
-\end{frame}
-
-\subsection{Parameter Estimation}
-%%% Slide 4: Maximum Likelihood Estimation %%%
-\begin{frame}{Maximum Likelihood Estimation (MLE)}
-\textbf{Intuition:} Finding the parameters that make the observed data most likely.
-\begin{columns}[T]
-\begin{column}{0.6\textwidth}
-\textbf{Objective:}
-\[ \theta^* = \arg\max_\theta \prod_{i=1}^N p(x_i|\theta) \]
-
-\textbf{Log-Likelihood:}
-\[ \mathcal{L}(\theta) = \sum_{i=1}^N \log p(x_i|\theta) \]
-
-\textbf{Example (Coin Toss):}
-\[ \hat{p} = \frac{\text{\# Heads}}{N} \]
-\end{column}
-
-\begin{column}{0.4\textwidth}
-\begin{tikzpicture}[scale=0.7]
-\draw[->] (-1.5,0) -- (1.5,0);
-\foreach \x in {-1,0,1} {
-    \draw (\x,0) -- (\x,-0.1) node[below] {$\x$};
-}
-\draw[blue,thick] (0.6,0) -- (0.6,1.5);
-\node[blue] at (0.6,1.8) {$\hat{p}$};
-\end{tikzpicture}
-
-\vspace{0.5cm}
-\textbf{GenAI Connection:} Foundation for training most generative models:
-\begin{itemize}
-\item Explicit models: Directly maximize likelihood
-\item Implicit models: Adversarial training objectives
-\end{itemize}
-\end{column}
-\end{columns}
-\end{frame}
-
-
-
-
-
-%%% Slide 8: From Probability to GenAI %%%
-\begin{frame}{Connecting Probability to Generative AI}
-\begin{center}
-\begin{tikzpicture}[scale=0.8]
-\node[draw] (prob) at (0,0) {Probability Theory};
-\node[draw] (stats) at (2,1) {Statistical Models};
-\node[draw] (dl) at (4,0) {Deep Learning};
-\node[draw] (genai) at (2,-1) {Generative AI};
-
-\draw[->] (prob) -- (stats);
-\draw[->] (stats) -- (dl);
-\draw[->] (dl) -- (genai);
-\draw[->] (prob) edge[bend right] (genai);
-\end{tikzpicture}
-\end{center}
-
-\textbf{Key Connections:}
-\begin{itemize}
-\item Neural networks $\rightarrow$ flexible function approximators
-\item Gradient-based optimization of probabilistic objectives
-\item Scalable inference $\rightarrow$ stochastic sampling methods
-\end{itemize}
-\end{frame}
 
 \section{The Birth of Neural Networks}
 \subsection{From ML to Deep Learning}
@@ -1749,6 +1575,178 @@ Best 2011 Entry & 25.8\% \\
 
 
 
+
+
+\section{Mathematical Foundations}
+\subsection{Probability Basics}
+%%% Slide 1: Probability Basics %%%
+\begin{frame}{Core Probability Concepts}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Key Definitions:}
+\begin{itemize}
+\item \textbf{Sample Space} ($\Omega$): All possible outcomes
+\item \textbf{Event} ($E \subseteq \Omega$): Subset of outcomes
+\item \textbf{Probability}: $P(E) \in [0,1]$ with:
+\begin{itemize}
+\item $P(\Omega) = 1$
+\item $P(\bigcup_i E_i) = \sum_i P(E_i)$ for disjoint events
+\end{itemize}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{Random Variables:}
+\begin{itemize}
+\item Maps outcomes to numbers
+\item Discrete vs Continuous
+\item PMF/PDF: $p_X(x) = P(X=x)$
+\end{itemize}
+
+\begin{tikzpicture}[scale=0.6]
+\draw[->] (0,0) -- (4,0) node[right] {$x$};
+\draw[->] (0,0) -- (0,3) node[above] {$p(x)$};
+\draw[blue,thick] plot[smooth] coordinates {(0.5,0.2) (1.5,2.5) (2.5,1) (3.5,0.3)};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\textbf{GenAI Connection:} All generative models learn probability distributions $p(x)$ over data space
+\end{frame}
+
+%%% Slide 2: Key Distributions %%%
+\begin{frame}{Essential Probability Distributions}
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+\textbf{Bernoulli:}
+\[ P(X=k) = \begin{cases}
+p & k=1 \\
+1-p & k=0
+\end{cases} \]
+\begin{tikzpicture}[scale=0.5]
+\draw[->] (0,0) -- (2,0);
+\draw[->] (0,0) -- (0,1.5);
+\draw[red] (0.5,0) -- (0.5,1) node[above] {$p$};
+\draw[blue] (1.5,0) -- (1.5,0.5) node[above] {$1-p$};
+\end{tikzpicture}
+\end{column}
+
+\begin{column}{0.33\textwidth}
+\textbf{Categorical:}
+\[ P(X=k) = p_k \]
+\[ \text{where } \sum p_k = 1 \]
+\begin{tikzpicture}[scale=0.5]
+\foreach \x/\h in {0.5/1.5,1.5/1,2.5/0.8} {
+    \draw[blue] (\x,0) -- (\x,\h);
+}
+\end{tikzpicture}
+\end{column}
+
+\begin{column}{0.33\textwidth}
+\textbf{Gaussian:}
+\[ p(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]
+\begin{tikzpicture}[scale=0.5]
+\draw[domain=-2:2,smooth,variable=\x,blue] plot ({\x+1.5},{1.5*exp(-\x*\x)});
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\textbf{GenAI Usage:} Bernoulli/Categorical for discrete data, Gaussian for continuous latent spaces
+\end{frame}
+
+%%% Slide 3: Conditional Probability & Bayes %%%
+\begin{frame}{Conditional Probability \& Bayes' Rule}
+\textbf{Intuition:} How we update our beliefs when we see new evidence.
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\textbf{Conditional Probability:}
+\[ P(A|B) = \frac{P(A \cap B)}{P(B)} \]
+
+\textbf{Bayes' Theorem:}
+\[ P(A|B) = \frac{P(B|A)P(A)}{P(B)} \]
+
+\textbf{Chain Rule:}
+\[ P(X_1,\ldots,X_n) = \prod_{i=1}^n P(X_i|X_1,\ldots,X_{i-1}) \]
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{tikzpicture}[scale=0.8]
+\draw[fill=blue!20, opacity=0.5] (0,0) circle (1.5);
+\draw[fill=red!20, opacity=0.5] (1.5,0) circle (1.5);
+\node at (-0.5,0) {A};
+\node at (1.5,0) {B};
+\end{tikzpicture}
+\vspace{0.5cm}
+\newline
+\textbf{GenAI Application:} Foundation of latent variable models like VAEs:
+\[ p(x|z) = \frac{p(z|x)p(x)}{p(z)} \]
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+\subsection{Parameter Estimation}
+%%% Slide 4: Maximum Likelihood Estimation %%%
+\begin{frame}{Maximum Likelihood Estimation (MLE)}
+\textbf{Intuition:} Finding the parameters that make the observed data most likely.
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\textbf{Objective:}
+\[ \theta^* = \arg\max_\theta \prod_{i=1}^N p(x_i|\theta) \]
+
+\textbf{Log-Likelihood:}
+\[ \mathcal{L}(\theta) = \sum_{i=1}^N \log p(x_i|\theta) \]
+
+\textbf{Example (Coin Toss):}
+\[ \hat{p} = \frac{\text{\# Heads}}{N} \]
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{tikzpicture}[scale=0.7]
+\draw[->] (-1.5,0) -- (1.5,0);
+\foreach \x in {-1,0,1} {
+    \draw (\x,0) -- (\x,-0.1) node[below] {$\x$};
+}
+\draw[blue,thick] (0.6,0) -- (0.6,1.5);
+\node[blue] at (0.6,1.8) {$\hat{p}$};
+\end{tikzpicture}
+
+\vspace{0.5cm}
+\textbf{GenAI Connection:} Foundation for training most generative models:
+\begin{itemize}
+\item Explicit models: Directly maximize likelihood
+\item Implicit models: Adversarial training objectives
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%% Slide 8: From Probability to GenAI %%%
+\begin{frame}{Connecting Probability to Generative AI}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\node[draw] (prob) at (0,0) {Probability Theory};
+\node[draw] (stats) at (2,1) {Statistical Models};
+\node[draw] (dl) at (4,0) {Deep Learning};
+\node[draw] (genai) at (2,-1) {Generative AI};
+
+\draw[->] (prob) -- (stats);
+\draw[->] (stats) -- (dl);
+\draw[->] (dl) -- (genai);
+\draw[->] (prob) edge[bend right] (genai);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Key Connections:}
+\begin{itemize}
+\item Neural networks $\rightarrow$ flexible function approximators
+\item Gradient-based optimization of probabilistic objectives
+\item Scalable inference $\rightarrow$ stochastic sampling methods
+\end{itemize}
+\end{frame}
 
 \section{Introduction to Generative AI}
 \subsection{Generative vs Discriminative}
