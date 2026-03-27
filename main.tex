@@ -1324,7 +1324,7 @@ For 2D:
     \item \textbf{Effect:}
     \begin{itemize}
         \only<1>{\item \textbf{Stride 2:} Increases resolution by spacing patches apart (No overlap with 2x2 kernel).}
-        \only<2>{\item \textbf{Stride 1:} Overlaps patches; overlapping regions are \textbf{summed}.}
+        \only<2->{\item \textbf{Stride 1:} Overlaps patches; overlapping regions are \textbf{summed}.}
     \end{itemize}
 \end{itemize}
 
@@ -1332,7 +1332,7 @@ For 2D:
 \centering
 \begin{tikzpicture}[scale=0.7]
     \only<1>{\draw[thick, ->, blue] (0,0) -- (1,0) node[right, font=\tiny] {Stride 2: High Expansion};}
-    \only<2>{\draw[thick, ->, red] (0,0) -- (1,0) node[right, font=\tiny] {Stride 1: Dense Overlap};}
+    \only<2->{\draw[thick, ->, red] (0,0) -- (1,0) node[right, font=\tiny] {Stride 1: Dense Overlap};}
 \end{tikzpicture}
 \end{column}
 
@@ -1385,7 +1385,7 @@ For 2D:
             
             \draw[<->, purple, thick] (1.5, 4.1) -- (2.5, 4.1) node[midway, above, font=\tiny] {Stride=2};
         }
-        \only<2>{
+        \only<2->{
             \node[anchor=south] at (1.5, 4.5) {\footnotesize Output ($3\times3$) via Stride 1};
             \draw[step=1cm, gray!15] (0,0) grid (3,3);
             
@@ -1406,15 +1406,25 @@ For 2D:
         }
     \end{scope}
 
-    % Footer Note
-    \node[draw, dashed, fill=orange!5, font=\tiny, align=left, inner sep=3pt] at (5, 1) {
-        \textbf{Summary:}\\
-        Stride $\geq$ Kernel: Sparse\\
-        Stride $<$ Kernel: Overlap
-    };
+
     \end{tikzpicture}
 \end{column}
 \end{columns}
+
+\begin{flushleft}
+\tiny
+\textbf{Summary:}\\
+Stride $\geq$ Kernel: Sparse\\
+Stride $<$ Kernel: Overlap
+\end{flushleft}
+
+\only<3->{
+\vspace{-0.5cm}
+\begin{flushleft}
+\tiny
+\textcolor{red}{\textbf{Question:} What happens if Stride = 0? What if Stride = 3?}
+\end{flushleft}
+}
 
 \end{frame}
 
