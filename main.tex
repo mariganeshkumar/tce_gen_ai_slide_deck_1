@@ -1229,30 +1229,45 @@ For 2D:
 \end{column}
 
 \begin{column}{0.5\textwidth}
-\begin{tikzpicture}[scale=0.66]
-% Input grid
-\node[draw, minimum size=1cm] (a) at (0,0) {a};
-\node[draw, minimum size=1cm] (b) at (1.5,0) {b};
-\node[draw, minimum size=1cm] (c) at (3,0) {c};
-\node[draw, minimum size=1cm] (d) at (4.5,0) {d};
-\node[draw, minimum size=1cm] (e) at (0,-1.5) {e};
-\node[draw, minimum size=1cm] (f) at (1.5,-1.5) {f};
-\node[draw, minimum size=1cm] (g) at (3,-1.5) {g};
-\node[draw, minimum size=1cm] (h) at (4.5,-1.5) {h};
-\node[draw, minimum size=1cm] (i) at (0,-3) {i};
-\node[draw, minimum size=1cm] (j) at (1.5,-3) {j};
-\node[draw, minimum size=1cm] (k) at (3,-3) {k};
-\node[draw, minimum size=1cm] (l) at (4.5,-3) {l};
+\begin{tikzpicture}[scale=0.65, every node/.style={transform shape}]
+    % Palette
+    \definecolor{inputColor}{HTML}{E8EFFF}
+    \definecolor{inputBorder}{HTML}{3B82F6}
+    \definecolor{kernelColor}{HTML}{FFF7ED}
+    \definecolor{kernelBorder}{HTML}{F97316}
 
-\node at (1.5,-5) {Input};
+    % --- Input Matrix ---
+    \begin{scope}[shift={(0,0)}]
+        \node[above] at (2.25, 0.8) {\large \textbf{Input} ($4 \times 3$)};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (a) at (0,0) {a};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (b) at (1.5,0) {b};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (c) at (3,0) {c};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (d) at (4.5,0) {d};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (e) at (0,-1.5) {e};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (f) at (1.5,-1.5) {f};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (g) at (3,-1.5) {g};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (h) at (4.5,-1.5) {h};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (i) at (0,-3) {i};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (j) at (1.5,-3) {j};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (k) at (3,-3) {k};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (l) at (4.5,-3) {l};
+    \end{scope}
 
-% Kernel
-\node[draw, minimum size=1cm] (w) at (7,0) {w};
-\node[draw, minimum size=1cm] (x) at (8.5,0) {x};
-\node[draw, minimum size=1cm] (y) at (7,-1.5) {y};
-\node[draw, minimum size=1cm] (z) at (8.5,-1.5) {z};
+    % Op Symbol
+    \node at (6.25, -1.5) {\Huge $\otimes$};
 
-\node at (8,-3) {Kernel};
+    % --- Kernel ---
+    \begin{scope}[shift={(7.5, -0.75)}]
+        \node[above] at (0.75, 1.2) {\large \textbf{Kernel} ($2 \times 2$)};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (w) at (0,0) {w};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (x) at (1.5,0) {x};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (y) at (0,-1.5) {y};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (z) at (1.5,-1.5) {z};
+    \end{scope}
+
 \end{tikzpicture}
 \end{column}
 \end{columns}
