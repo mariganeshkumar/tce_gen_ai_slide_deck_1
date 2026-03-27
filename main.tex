@@ -1261,50 +1261,143 @@ For 2D:
 
 %% Slide 4: Convolution Visualization
 \begin{frame}
-\frametitle{Convolution in Action}
+\frametitle{Convolution in Action (Stride 1)}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.66]
-% Input grid
-\node[draw, minimum size=1cm] (a) at (0,0) {a};
-\node[draw, minimum size=1cm] (b) at (1.5,0) {b};
-\node[draw, minimum size=1cm] (c) at (3,0) {c};
-\node[draw, minimum size=1cm] (d) at (4.5,0) {d};
-\node[draw, minimum size=1cm] (e) at (0,-1.5) {e};
-\node[draw, minimum size=1cm] (f) at (1.5,-1.5) {f};
-\node[draw, minimum size=1cm] (g) at (3,-1.5) {g};
-\node[draw, minimum size=1cm] (h) at (4.5,-1.5) {h};
-\node[draw, minimum size=1cm] (i) at (0,-3) {i};
-\node[draw, minimum size=1cm] (j) at (1.5,-3) {j};
-\node[draw, minimum size=1cm] (k) at (3,-3) {k};
-\node[draw, minimum size=1cm] (l) at (4.5,-3) {l};
+    \begin{tikzpicture}[scale=0.7, every node/.style={transform shape}]
+    % Color Palette
+    \definecolor{inputColor}{HTML}{E8EFFF}
+    \definecolor{inputBorder}{HTML}{3B82F6}
+    \definecolor{kernelColor}{HTML}{FFF7ED}
+    \definecolor{kernelBorder}{HTML}{F97316}
+    \definecolor{outputColor}{HTML}{F0FDF4}
+    \definecolor{outputBorder}{HTML}{22C55E}
+    
+    % --- Input Matrix (Top Left) ---
+    \begin{scope}[shift={(0,0)}]
+        \node[above] at (2.25, 0.8) {\large \textbf{Input} ($4 \times 3$)};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (a) at (0,0) {a};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (b) at (1.5,0) {b};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (c) at (3,0) {c};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (d) at (4.5,0) {d};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (e) at (0,-1.5) {e};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (f) at (1.5,-1.5) {f};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (g) at (3,-1.5) {g};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (h) at (4.5,-1.5) {h};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (i) at (0,-3) {i};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (j) at (1.5,-3) {j};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (k) at (3,-3) {k};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (l) at (4.5,-3) {l};
+    \end{scope}
 
-\node at (1.5,-4) {Input};
+    % Highlight first position
+    \draw[inputBorder, line width=2pt, rounded corners=4pt] (-0.7,0.7) rectangle (2.2,-2.2);
 
-% Highlight first position
-\draw[blue, thick] (-1,1) rectangle (2,-2);
+    % --- Kernel (Top Right) ---
+    \begin{scope}[shift={(8.5, -0.75)}]
+        \node[above] at (0.75, 1.2) {\large \textbf{Kernel} ($2 \times 2$)};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (w) at (0,0) {w};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (x) at (1.5,0) {x};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (y) at (0,-1.5) {y};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (z) at (1.5,-1.5) {z};
+    \end{scope}
 
-% Kernel
-\node[draw, minimum size=1cm] (w) at (7,0) {w};
-\node[draw, minimum size=1cm] (x) at (8.5,0) {x};
-\node[draw, minimum size=1cm] (y) at (7,-1.5) {y};
-\node[draw, minimum size=1cm] (z) at (8.5,-1.5) {z};
+    % Mathematical Symbol
+    \node at (6.75, -1.5) {\Huge $\otimes$};
 
-\node at (7.5,-2.5) {Kernel};
+    % --- Output Matrix (Bottom) ---
+    \begin{scope}[shift={(1.5, -6.5)}]
+        \node[above] at (3.75, 0.8) {\large \textbf{Output Feature Map} ($3 \times 2$)};
+        
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o1) at (0,0) {$aw+bx+ey+fz$};
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o2) at (2.7,0) {$bw+cx+fy+gz$};
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o3) at (5.4,0) {$cw+dx+gy+hz$};
+        
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o4) at (0,-1.5) {$ew+fx+iy+jz$};
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o5) at (2.7,-1.5) {$fw+gx+jy+kz$};
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o6) at (5.4,-1.5) {$gw+hx+ky+lz$};
+    \end{scope}
 
-% Output
-\node[draw, minimum width=4cm, minimum height=1cm] (o1) at (2,-6) {aw+bx+ey+fz};
-\node[draw, minimum width=4cm, minimum height=1cm] (o2) at (8,-6) {bw+cx+fy+gz};
-\node[draw, minimum width=4cm, minimum height=1cm] (o3) at (14,-6) {cw+dx+gy+hz};
-\node[draw, minimum width=4cm, minimum height=1cm] (o4) at (2,-7.5) {ew+fx+iy+jz};
-\node[draw, minimum width=4cm, minimum height=1cm] (o5) at (8,-7.5) {fw+gx+jy+kz};
-\node[draw, minimum width=4cm, minimum height=1cm] (o6) at (14,-7.5) {gw+hx+ky+lz};
+    % Arrows connecting to output
+    \draw[->, >=stealth, line width=1.5pt, gray!50] (2.25, -3.2) to[out=-90, in=135] (o1.north west);
+    \draw[->, >=stealth, line width=1.5pt, gray!50] (9.25, -2.5) to[out=-90, in=45] (o1.north east);
 
-\node at (8,-9) {Output Feature Map};
+\end{tikzpicture}
+\end{center}
 
-% Arrows
-\draw[->] (2.5,-1) -- (4,-3) -- (o1);
-\draw[->] (5.5,-1.5) -- (4,-3);
+\end{frame}
+
+
+
+%% Slide 5: Convolution Visualization (Stride 2)
+\begin{frame}
+\frametitle{Convolution in Action (Stride 2)}
+
+\begin{center}
+    \begin{tikzpicture}[scale=0.7, every node/.style={transform shape}]
+    % Color Palette
+    \definecolor{inputColor}{HTML}{E8EFFF}
+    \definecolor{inputBorder}{HTML}{3B82F6}
+    \definecolor{kernelColor}{HTML}{FFF7ED}
+    \definecolor{kernelBorder}{HTML}{F97316}
+    \definecolor{outputColor}{HTML}{F0FDF4}
+    \definecolor{outputBorder}{HTML}{22C55E}
+    
+    % --- Input Matrix (Top Left) ---
+    \begin{scope}[shift={(0,0)}]
+        \node[above] at (2.25, 0.8) {\large \textbf{Input} ($4 \times 3$)};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (a) at (0,0) {a};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (b) at (1.5,0) {b};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (c) at (3,0) {c};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (d) at (4.5,0) {d};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (e) at (0,-1.5) {e};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (f) at (1.5,-1.5) {f};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (g) at (3,-1.5) {g};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (h) at (4.5,-1.5) {h};
+        
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (i) at (0,-3) {i};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (j) at (1.5,-3) {j};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (k) at (3,-3) {k};
+        \node[draw=inputBorder, fill=inputColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (l) at (4.5,-3) {l};
+    \end{scope}
+
+    % Highlight first position
+    \draw[inputBorder, line width=1.5pt, rounded corners=4pt] (-0.7,0.7) rectangle (2.2,-2.2);
+
+    % Highlight second position (Stride 2 shift)
+    \draw[kernelBorder, dashed, line width=1.5pt, rounded corners=4pt] (2.3,0.7) rectangle (5.2,-2.2);
+
+    % Visual stride jump note
+    \draw[<->, >=stealth, line width=1pt, purple] (0.75, 0.9) -- (3.75, 0.9) node[midway, above, font=\small] {Shift by 2};
+
+    % --- Kernel (Top Right) ---
+    \begin{scope}[shift={(8.5, -0.75)}]
+        \node[above] at (0.75, 1.2) {\large \textbf{Kernel} ($2 \times 2$)};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (w) at (0,0) {w};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (x) at (1.5,0) {x};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (y) at (0,-1.5) {y};
+        \node[draw=kernelBorder, fill=kernelColor, minimum size=1.2cm, rounded corners=2pt, font=\large] (z) at (1.5,-1.5) {z};
+    \end{scope}
+
+    \node at (6.75, -1.5) {\Huge $\otimes$};
+
+    % --- Output Matrix (Bottom) ---
+    \begin{scope}[shift={(2.8, -6.5)}]
+        \node[above] at (1.35, 0.8) {\large \textbf{Output Feature Map} ($2 \times 1$)};
+        
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o1) at (0,0) {$aw+bx+ey+fz$};
+        \node[draw=outputBorder, fill=outputColor, minimum width=2.5cm, minimum height=1.2cm, rounded corners=2pt, font=\small] (o2) at (2.7,0) {$cw+dx+gy+hz$};
+    \end{scope}
+
+    % Arrows
+    \draw[->, >=stealth, line width=1.5pt, gray!50] (2.25, -3.2) to[out=-90, in=135] (o1.north west);
+    \draw[->, >=stealth, line width=1.5pt, gray!50] (9.25, -2.5) to[out=-90, in=45] (o1.north east);
+
 \end{tikzpicture}
 \end{center}
 
