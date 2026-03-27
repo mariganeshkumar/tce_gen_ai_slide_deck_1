@@ -39,3 +39,8 @@ These suggestions are designed to make the slide deck more engaging, modern, and
 * [x] Add `\metroset{block=fill}` to preamble.
 * [x] Move Google Drive notebook links to the local `hands-on/` folder.
 * [x] Add a "Modern Gen AI Collages" slide at the beginning.
+* [x] Implement robust Xavier initialization for XOR backpropagation.
+* [x] Add `plt.contourf` decision boundary visualization for XOR.
+* [x] Remove MNIST classification references from Table of Contents in notebook.
+* [x] Catch TypeErrors in student perceptron task cell and provide hints.
+* [x] Fixed AND/OR gate mixup in training scripts.
