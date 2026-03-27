@@ -1313,72 +1313,112 @@ For 2D:
 
 %% Slide: Transposed Convolution Visualization
 \begin{frame}
-\frametitle{Transposed Convolution in Action}
+\frametitle{Transposed Convolution (Upsampling)}
 
-\begin{center}
-\begin{tikzpicture}[scale=0.66]
-% Input grid (smaller than output)
-\node[draw, minimum size=1cm] (a) at (0,0) {a};
-\node[draw, minimum size=1cm] (b) at (1.5,0) {b};
-\node[draw, minimum size=1cm] (c) at (0,-1.5) {c};
-\node[draw, minimum size=1cm] (d) at (1.5,-1.5) {d};
+\begin{columns}[T]
+\begin{column}{0.4\textwidth}
+\textbf{The Mechanism:}
+\begin{itemize}
+    \item \textbf{Broadcast:} Each input pixel multiplies the entire kernel.
+    \item \textbf{Stride:} Determines the spacing between patches.
+    \item \textbf{Effect:}
+    \begin{itemize}
+        \only<1>{\item \textbf{Stride 2:} Increases resolution by spacing patches apart (No overlap with 2x2 kernel).}
+        \only<2>{\item \textbf{Stride 1:} Overlaps patches; overlapping regions are \textbf{summed}.}
+    \end{itemize}
+\end{itemize}
 
-\node at (0.5,-2) {Input};
-
-% Kernel
-\node[draw, minimum size=1cm] (w) at (5,0) {w};
-\node[draw, minimum size=1cm] (x) at (6.5,0) {x};
-\node[draw, minimum size=1cm] (y) at (5,-1.5) {y};
-\node[draw, minimum size=1cm] (z) at (6.5,-1.5) {z};
-
-\node at (5.5,-2) {Kernel};
-
-% Output grid (larger than input)
-\node[draw, minimum size=0.8cm] (o1) at (8,1) {aw};
-\node[draw, minimum size=0.8cm] (o2) at (9.5,1) {ax};
-\node[draw, minimum size=0.8cm] (o3) at (11,1) {bw};
-\node[draw, minimum size=0.8cm] (o4) at (12.5,1) {bx};
-\node[draw, minimum size=0.8cm] (o5) at (8,0) {ay};
-\node[draw, minimum size=0.8cm] (o6) at (9.5,0) {az};
-\node[draw, minimum size=0.8cm] (o7) at (11,0) {by};
-\node[draw, minimum size=0.8cm] (o8) at (12.5,0) {bz};
-\node[draw, minimum size=0.8cm] (o9) at (8,-1) {cw};
-\node[draw, minimum size=0.8cm] (o10) at (9.5,-1) {cx};
-\node[draw, minimum size=0.8cm] (o11) at (11,-1) {dw};
-\node[draw, minimum size=0.8cm] (o12) at (12.5,-1) {dx};
-\node[draw, minimum size=0.8cm] (o13) at (8,-2) {cy};
-\node[draw, minimum size=0.8cm] (o14) at (9.5,-2) {cz};
-\node[draw, minimum size=0.8cm] (o15) at (11,-2) {dy};
-\node[draw, minimum size=0.8cm] (o16) at (12.5,-2) {dz};
-
-\node at (9.5,-3) {Expanded Feature Map};
-
-% Output after summation (overlapping regions)
-\node[draw, minimum width=4cm, minimum height=1cm] (s1) at (3,-4.5) {aw+bw+ay+by};
-\node[draw, minimum width=4cm, minimum height=1cm] (s2) at (8,-4.5) {ax+bx+az+bz};
-\node[draw, minimum width=4cm, minimum height=1cm] (s3) at (3,-6) {cw+dw+cy+dy};
-\node[draw, minimum width=4cm, minimum height=1cm] (s4) at (8,-6) {cx+dx+cz+dz};
-
-\node at (5.5,-7) {Final Output Feature Map};
-
-% Arrows and explanations
-\draw[->] (a) -- (2.5,-0.5) -- (9.5,-0.5);
-\draw[->] (5.5,-1.5) -- (2.5,-0.5);
-\node[align=center] at (2.5,-1.5) {Each input element\\broadcasts through\\the entire kernel};
-
-% Summation arrows
-\draw[->, dotted] (9.5,0.5) -- (5.5,-4);
-\node[align=center] at (6,-3) {Overlapping regions\\are summed};
-
-% Highlight stride and expansion
-\draw[red, dashed] (8.5,1.5) -- (8.5,-2.5);
-\draw[red, dashed] (10.5,1.5) -- (10.5,-2.5);
-\node[red, align=center] at (11.5,0) {Stride determines\\spacing between\\expansions};
-
+\vspace{0.5cm}
+\centering
+\begin{tikzpicture}[scale=0.7]
+    \only<1>{\draw[thick, ->, blue] (0,0) -- (1,0) node[right, font=\tiny] {Stride 2: High Expansion};}
+    \only<2>{\draw[thick, ->, red] (0,0) -- (1,0) node[right, font=\tiny] {Stride 1: Dense Overlap};}
 \end{tikzpicture}
-\end{center}
+\end{column}
+
+\begin{column}{0.6\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.6]
+    % Styles
+    \tikzset{
+        inp/.style={rectangle, draw, minimum size=0.8cm, font=\small\bfseries},
+        ker/.style={rectangle, draw, minimum size=0.6cm, fill=gray!20, font=\tiny},
+        outc/.style={rectangle, draw, minimum size=0.75cm, font=\tiny, align=center},
+        arr/.style={->, >=stealth, thick, gray!40}
+    }
+
+    % 1. Input (Top)
+    \node[inp, fill=blue!30] (ia) at (0,7.5) {a};
+    \node[inp, fill=red!30] (ib) at (1,7.5) {b};
+    \node[inp, fill=yellow!30] (ic) at (0,6.5) {c};
+    \node[inp, fill=green!30] (id) at (1,6.5) {d};
+    \node[above=0.1cm] at (0.5,7.9) {\footnotesize Input ($2\times2$)};
+
+    % 2. Kernel (Top Right)
+    \node[ker] (kw) at (4,7.5) {w};
+    \node[ker] (kx) at (4.7,7.5) {x};
+    \node[ker] (ky) at (4,6.8) {y};
+    \node[ker] (kz) at (4.7,6.8) {z};
+    \node[above=0.1cm] at (4.35,7.9) {\footnotesize Kernel ($2\times2$)};
+
+    % Directional Arrows
+    \draw[arr] (1.5, 7.0) -- (3, 7.0) node[midway, above, font=\tiny, black] {Broadcast};
+
+    % 3. Output Grid Toggle
+    \begin{scope}[shift={(0.2, -0.5)}]
+        \only<1>{
+            \node[anchor=south] at (2, 4.5) {\footnotesize Output ($4\times4$) via Stride 2};
+            \draw[step=1cm, gray!15] (0,0) grid (4,4);
+            
+            % Stride 2 patches
+            \node[outc, fill=blue!10] at (0.5, 3.5) {aw}; \node[outc, fill=blue!10] at (1.5, 3.5) {ax};
+            \node[outc, fill=blue!10] at (0.5, 2.5) {ay}; \node[outc, fill=blue!10] at (1.5, 2.5) {az};
+            
+            \node[outc, fill=red!10] at (2.5, 3.5) {bw}; \node[outc, fill=red!10] at (3.5, 3.5) {bx};
+            \node[outc, fill=red!10] at (2.5, 2.5) {by}; \node[outc, fill=red!10] at (3.5, 2.5) {bz};
+            
+            \node[outc, fill=yellow!10] at (0.5, 1.5) {cw}; \node[outc, fill=yellow!10] at (1.5, 1.5) {cx};
+            \node[outc, fill=yellow!10] at (0.5, 0.5) {cy}; \node[outc, fill=yellow!10] at (1.5, 0.5) {cz};
+
+            \node[outc, fill=green!10] at (2.5, 1.5) {dw}; \node[outc, fill=green!10] at (3.5, 1.5) {dx};
+            \node[outc, fill=green!10] at (2.5, 0.5) {dy}; \node[outc, fill=green!10] at (3.5, 0.5) {dz};
+            
+            \draw[<->, purple, thick] (1.5, 4.1) -- (2.5, 4.1) node[midway, above, font=\tiny] {Stride=2};
+        }
+        \only<2>{
+            \node[anchor=south] at (1.5, 4.5) {\footnotesize Output ($3\times3$) via Stride 1};
+            \draw[step=1cm, gray!15] (0,0) grid (3,3);
+            
+            % Stride 1 patches with overlap
+            \node[outc, fill=blue!10] at (0.5, 2.5) {aw};
+            \node[outc, fill=purple!20] at (1.5, 2.5) {ax+\\bw};
+            \node[outc, fill=red!10] at (2.5, 2.5) {bx};
+            
+            \node[outc, fill=cyan!20] at (0.5, 1.5) {ay+\\cw};
+            \node[outc, fill=gray!40] at (1.5, 1.5) {az+by\\+cx+dw};
+            \node[outc, fill=orange!20] at (2.5, 1.5) {bz+\\dx};
+            
+            \node[outc, fill=yellow!10] at (0.5, 0.5) {cy};
+            \node[outc, fill=pink!20] at (1.5, 0.5) {cz+\\dy};
+            \node[outc, fill=green!10] at (2.5, 0.5) {dz};
+            
+            \draw[<->, purple, thick] (0.5, 3.5) -- (1.5, 3.5) node[midway, above, font=\tiny] {Stride=1};
+        }
+    \end{scope}
+
+    % Footer Note
+    \node[draw, dashed, fill=orange!5, font=\tiny, align=left, inner sep=3pt] at (5, 1) {
+        \textbf{Summary:}\\
+        Stride $\geq$ Kernel: Sparse\\
+        Stride $<$ Kernel: Overlap
+    };
+    \end{tikzpicture}
+\end{column}
+\end{columns}
 
 \end{frame}
+
+
 
 
 
