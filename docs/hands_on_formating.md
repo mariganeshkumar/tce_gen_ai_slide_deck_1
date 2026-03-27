@@ -32,3 +32,37 @@ with open(notebook_path, 'w', encoding='utf-8') as f:
 ```
 
 Push changes to GitHub. The preview should render normally.
+
+---
+
+# 🧹 Pre-Release / Student Cleanup Steps
+
+Before releasing a notebook to students, perform these two steps to ensure a fair and clean experience:
+
+### 1. Clear All Outputs
+You should clear all execution counts and outputs so students see empty outputs when running code. You can use this Python script to clear outputs programmatically:
+
+```python
+import json
+
+notebook_path = "hands-on/Perceptron_Hands_ON.ipynb"
+
+with open(notebook_path, 'r', encoding='utf-8') as f:
+    nb = json.load(f)
+
+for cell in nb.get('cells', []):
+    if cell.get('cell_type') == 'code':
+        cell['outputs'] = []
+        cell['execution_count'] = None
+
+with open(notebook_path, 'w', encoding='utf-8') as f:
+    json.dump(nb, f, indent=1, ensure_ascii=False)
+```
+
+### 2. Remove Exercise Hints From Student Cells
+Strip any solution hints from exercise cells that students are supposed to complete. 
+
+For example, finding cells with `# Hint` and removing them entirely before students receive the file. You can search for them using:
+```bash
+git grep "# Hint"
+```
