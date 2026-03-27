@@ -69,3 +69,34 @@ with open(notebook_path, 'w', encoding='utf-8') as f:
 ```
 
 Push changes to GitHub. The preview should render normally.
+
+---
+
+### Case: GitHub Preview Fails ('outputs' is a required property)
+
+#### 🚨 Symptoms
+When viewing a Jupyter notebook (`.ipynb`) in GitHub, the preview fails with:
+> Invalid Notebook
+> 'outputs' is a required property
+
+#### 🔍 Cause
+A code cell is missing the `"outputs"` array entirely (the standard schema expects `[]` if run was cleared).
+
+#### 🛠 Fix
+Run the following Python script to scan code cells and restore empty outputs:
+
+```python
+import json
+
+notebook_path = "hands-on/Perceptron_Hands_ON.ipynb"
+
+with open(notebook_path, 'r', encoding='utf-8') as f:
+    nb = json.load(f)
+
+for cell in nb.get('cells', []):
+    if cell.get('cell_type') == 'code' and 'outputs' not in cell:
+        cell['outputs'] = []
+
+with open(notebook_path, 'w', encoding='utf-8') as f:
+    json.dump(nb, f, indent=1, ensure_ascii=False)
+```
